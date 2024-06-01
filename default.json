@@ -14,6 +14,6 @@
         "matchPackageNames": ["alpine"],
         "matchCategories": ["docker"],
         "replacementName": "docker.io/alpine"
-      },
-    ],
+      }
+    ]
 }
