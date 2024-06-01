@@ -1,0 +1,6 @@
+ {
+    "description": "Meziantou's default preset",
+    "extends": [
+      "config:recommended"
+    ]
+}
