@@ -1,6 +1,7 @@
- {
-    "description": "Meziantou's default preset",
-    "extends": [
-      "config:recommended"
-    ]
+{
+  "description": "Meziantou's default preset",
+  "extends": [
+    "config:recommended",
+    "schedule:nonOfficeHours"
+  ]
 }
