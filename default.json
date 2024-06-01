@@ -2,6 +2,7 @@
   "description": "Meziantou's default preset",
   "extends": [
     "config:recommended",
-    "schedule:nonOfficeHours"
+    "schedule:nonOfficeHours",
+    ":semanticCommits",    
   ]
 }
