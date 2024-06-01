@@ -3,6 +3,17 @@
   "extends": [
     "config:recommended",
     "schedule:nonOfficeHours",
-    ":semanticCommits",    
-  ]
+    ":semanticCommits",
+    ":enableVulnerabilityAlerts",
+    "docker:pinDigests",
+    "helpers:pinGitHubActionDigests",
+    ":pinDevDependencies"
+  ],
+  "packageRules": [
+      {
+        "matchPackageNames": ["alpine"],
+        "matchCategories": ["docker"],
+        "replacementName": "registry.hub.docker.com/alpine",
+      },
+    ],
 }
