@@ -8,12 +8,5 @@
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     ":pinDevDependencies"
-  ],
-  "packageRules": [
-      {
-        "matchPackageNames": ["alpine"],
-        "matchCategories": ["docker"],
-        "replacementName": "docker.io/alpine"
-      }
-    ]
+  ]
 }
