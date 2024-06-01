@@ -13,7 +13,7 @@
       {
         "matchPackageNames": ["alpine"],
         "matchCategories": ["docker"],
-        "replacementName": "registry.hub.docker.com/alpine",
+        "replacementName": "registry.hub.docker.com/alpine"
       },
     ],
 }
