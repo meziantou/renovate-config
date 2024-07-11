@@ -33,6 +33,10 @@
       "matchPackageNames": ["XUnitToFluentAssertionsAnalyzer"],
       "matchCategories": ["nuget"],
       "replacementName": "Meziantou.FluentAssertionsAnalyzers"
+    },
+    {
+      "matchUpdateTypes": ["pin", "pinDigest", "digest"],
+      "groupName": "Pin dependencies"
     }
   ]
 }
