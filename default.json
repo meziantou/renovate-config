@@ -6,8 +6,6 @@
     "schedule:nonOfficeHours",
     ":semanticCommits",
     ":enableVulnerabilityAlerts",
-    "docker:pinDigests",
-    "helpers:pinGitHubActionDigests",
     ":pinDevDependencies",
     "group:allNonMajor"
   ],
