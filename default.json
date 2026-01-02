@@ -19,6 +19,18 @@
       ],
       "datasourceTemplate": "nuget",
       "versioningTemplate": "nuget"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^.*\\.cs$"],
+      "matchStrings": ["\"(?<depName>ghcr\\.io/meziantou/[^:]+):(?<currentValue>.+?)\""],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [".*"],
+      "matchStrings": ["https://github.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>[^/]+?)/"],
+      "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [
@@ -35,6 +47,30 @@
     {
       "matchUpdateTypes": ["pin", "pinDigest", "digest"],
       "groupName": "Pin dependencies"
+    },
+    {
+      "groupName": "all-dependencies",
+      "automerge": true,
+      "automergeType": "branch",
+      "stabilityDays": 3
+    },
+    {
+      "groupName": "trusted-dependencies",
+      "matchPackageNames": [
+        "/^ghcr.io/meziantou/.*/i",
+        "/^mcr.microsoft.com/dotnet/.*/i",
+        "/^alpine$/i",
+        "/^azure\\.$/i",
+        "/^meziantou\\./i",
+        "/^mezhome/i",
+        "/^meziantou/i",
+        "/^microsoft\\.$/i"
+      ],
+      "pinDigests": false,
+      "stabilityDays": 0
     }
-  ]
+  ],
+  "docker": {
+    "pinDigests": true
+  }
 }
