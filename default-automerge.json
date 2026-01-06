@@ -1,0 +1,9 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Meziantou's auto-merge preset",
+  "packageRules": [
+    {
+      "automerge": true,
+      "automergeType": "branch"
+    },
+}
