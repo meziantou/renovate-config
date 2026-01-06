@@ -7,7 +7,7 @@ To use these presets in your Renovate configuration, add them to the `extends` a
 
 ### Default Configuration
 
-This preset includes recommended settings, non-office hours scheduling, semantic commits, vulnerability alerts, and custom regex managers for .NET, Docker, and GitHub releases.
+This preset includes recommended settings, non-office hours scheduling, semantic commits, vulnerability alerts, and custom regex managers for NuGet packages (.nuspec files), Docker images, and GitHub releases.
 
 ```json
 {
@@ -42,5 +42,5 @@ This preset enables automatic merging of pull requests created by Renovate. Use 
 
 ## Available Presets
 
-- **`default`** (`default.json`): Meziantou's default Renovate configuration with recommended settings, custom regex managers for .NET, Docker images, and GitHub releases
+- **`default`** (`default.json`): Meziantou's default Renovate configuration with recommended settings, custom regex managers for NuGet packages (.nuspec files), Docker images, and GitHub releases
 - **`default-automerge`** (`default-automerge.json`): Enables automatic merging of Renovate pull requests
