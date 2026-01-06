@@ -7,7 +7,7 @@ To use these presets in your Renovate configuration, add them to the `extends` a
 
 ### Default Configuration
 
-This preset includes recommended settings, non-office hours scheduling, semantic commits, vulnerability alerts, and custom regex managers for .NET projects.
+This preset includes recommended settings, non-office hours scheduling, semantic commits, vulnerability alerts, and custom regex managers for .NET, Docker, and GitHub releases.
 
 ```json
 {
