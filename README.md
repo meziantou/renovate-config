@@ -42,5 +42,5 @@ This preset enables automatic merging of pull requests created by Renovate. Use 
 
 ## Available Presets
 
-- **`default`** (`default.json`): Meziantou's default Renovate configuration with recommended settings, custom regex managers for NuGet, Docker images, and GitHub releases
+- **`default`** (`default.json`): Meziantou's default Renovate configuration with recommended settings, custom regex managers for .NET, Docker images, and GitHub releases
 - **`default-automerge`** (`default-automerge.json`): Enables automatic merging of Renovate pull requests
