@@ -9,6 +9,7 @@
     ":pinDevDependencies",
     "group:allNonMajor"
   ],
+  "configMigration": true,
   "regexManagers": [
     {
       "description": "nuspec files manager",
