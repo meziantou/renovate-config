@@ -10,6 +10,7 @@
     "group:allNonMajor"
   ],
   "configMigration": true,
+  "reviewersFromCodeOwners": true,
   "regexManagers": [
     {
       "description": "nuspec files manager",
