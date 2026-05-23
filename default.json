@@ -38,7 +38,7 @@
   "packageRules": [
     {
       "groupName": "all-dependencies",
-      "stabilityDays": 3
+      "stabilityDays": 7
     },
     {
       "matchPackageNames": ["Meziantou.ProjectConfiguration"],
