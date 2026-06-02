@@ -38,7 +38,7 @@
   "packageRules": [
     {
       "groupName": "all-dependencies",
-      "stabilityDays": 7
+      "stabilityDays": 14
     },
     {
       "matchPackageNames": ["Meziantou.ProjectConfiguration"],
@@ -70,6 +70,7 @@
         "/^alpine$/i",
         "/^azure\\.$/i",
         "/^microsoft\\.$/i",
+        "/^nuget\\.$/i",
         "/^system\\.$/i"
       ],
       "pinDigests": false,
