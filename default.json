@@ -39,16 +39,17 @@
   "packageRules": [
     {
       "groupName": "all-dependencies",
+      "matchPackageNames": ["/.*/"],
       "stabilityDays": 14
     },
     {
       "matchPackageNames": ["Meziantou.ProjectConfiguration"],
-      "matchCategories": ["nuget"],
+      "matchManagers": ["nuget"],
       "replacementName": "Meziantou.DotNet.CodingStandard"
     },
     {
       "matchPackageNames": ["XUnitToFluentAssertionsAnalyzer"],
-      "matchCategories": ["nuget"],
+      "matchManagers": ["nuget"],
       "replacementName": "Meziantou.FluentAssertionsAnalyzers"
     },
     {

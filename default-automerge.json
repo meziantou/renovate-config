@@ -3,6 +3,7 @@
   "description": "Meziantou's auto-merge preset",
   "packageRules": [
     {
+      "matchPackageNames": ["/.*/"],
       "automerge": true,
       "automergeType": "pr"
     }
