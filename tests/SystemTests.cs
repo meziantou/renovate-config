@@ -1,5 +1,3 @@
-using Xunit.Abstractions;
-
 namespace Meziantou.RenovateConfig.Tests;
 
 public sealed class SystemTests(ITestOutputHelper output)

@@ -1,18 +1,13 @@
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using CliWrap;
 using Markdig;
 using Markdig.Extensions.Tables;
 using Markdig.Syntax;
 using Meziantou.Framework;
 using Meziantou.Framework.InlineSnapshotTesting;
 using Octokit;
-using Xunit.Abstractions;
 
 namespace Meziantou.RenovateConfig.Tests;
 
@@ -377,26 +372,23 @@ internal sealed class TestContext : IAsyncDisposable
 
     private static async Task ExecuteCommand(ITestOutputHelper output, string executable, string[] arguments, KeyValuePair<string, string>[]? environmentVariables = null)
     {
-        var stdOut = new StringBuilder();
-        var stdErr = new StringBuilder();
-        try
-        {
-            await Cli.Wrap(executable)
-                .WithArguments(arguments)
-                .WithEnvironmentVariables(builder =>
+        var result = await ProcessWrapper.Create(executable)
+            .WithArguments(arguments)
+            .WithEnvironmentVariables(builder =>
+            {
+                foreach (var pair in environmentVariables ?? [])
                 {
-                    foreach (var pair in environmentVariables ?? [])
-                    {
-                        builder.Set(pair.Key, pair.Value);
-                    }
-                })
-                .WithStandardOutputPipe(PipeTarget.Merge(PipeTarget.ToStringBuilder(stdOut), PipeTarget.ToDelegate(output.WriteLine)))
-                .WithStandardErrorPipe(PipeTarget.Merge(PipeTarget.ToStringBuilder(stdErr), PipeTarget.ToDelegate(output.WriteLine)))
-                .ExecuteAsync();
-        }
-        catch (Win32Exception exception)
+                    builder.Set(pair.Key, pair.Value);
+                }
+            })
+            .AddOutputStream(OutputTarget.ToTextDelegate(line => output.WriteLine($"[stdout] {line}")))
+            .AddErrorStream(OutputTarget.ToTextDelegate(line => output.WriteLine($"[stderr] {line}")))
+            .WithValidation(ProcessValidationMode.None)
+            .ExecuteBufferedAsync(Xunit.TestContext.Current.CancellationToken);
+
+        if (result.ExitCode != 0)
         {
-            throw new InvalidOperationException($"Could not execute '{executable}'. Ensure it is installed and available on PATH.", exception);
+            Assert.Fail($"Command '{executable} {string.Join(' ', arguments)}' exited with code {result.ExitCode}. Output:\n{result}");
         }
     }
 }

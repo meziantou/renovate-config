@@ -1,6 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-
 namespace Meziantou.RenovateConfig.Tests;
 
 internal sealed class TemporaryRenovateBranchName : TemporaryBranchName
