@@ -109,7 +109,6 @@ internal sealed class TestContext : IAsyncDisposable
                 new("RENOVATE_PR_HOURLY_LIMIT", "0"),
                 new("RENOVATE_PR_CONCURRENT_LIMIT", "0"),
                 new("RENOVATE_BRANCH_CONCURRENT_LIMIT", "0"),
-                new("RENOVATE_LABELS", """["renovate-test"]"""),
                 new("GIT_CONFIG_COUNT", "1"),
                 new("GIT_CONFIG_KEY_0", "commit.gpgsign"),
                 new("GIT_CONFIG_VALUE_0", "false"),
@@ -211,13 +210,13 @@ internal sealed class TestContext : IAsyncDisposable
         Assert.Contains(pullRequests, pullRequest => pullRequest.Title.Contains(value, StringComparison.OrdinalIgnoreCase));
     }
 
-    public async Task AssertOpenPullRequestsHaveExpectedMetadataAsync()
+    public async Task AssertOpenPullRequestsHaveExpectedMetadataAsync(string expectedLabel)
     {
         var pullRequests = await GetPullRequestsAsync(ItemStateFilter.Open);
         Assert.NotEmpty(pullRequests);
-        Assert.All(pullRequests, static pullRequest =>
+        Assert.All(pullRequests, pullRequest =>
         {
-            Assert.Contains("renovate-test", pullRequest.Labels);
+            Assert.Contains(expectedLabel, pullRequest.Labels, StringComparer.OrdinalIgnoreCase);
             Assert.NotEmpty(pullRequest.PackageUpdates);
             Assert.NotEmpty(pullRequest.Commits);
             Assert.False(pullRequest.Merged);
