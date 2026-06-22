@@ -31,7 +31,7 @@ public sealed class SystemTests(ITestOutputHelper output)
         await context.AssertPackagesSharePullRequestAsync("mcr.microsoft.com/dotnet/sdk", "mcr.microsoft.com/dotnet/aspnet");
         await context.AssertPullRequestTitleContainsAsync("Meziantou.DotNet.CodingStandard");
         await context.AssertPullRequestTitleContainsAsync("Meziantou.FluentAssertionsAnalyzers");
-        await context.AssertOpenPullRequestsHaveExpectedMetadataAsync();
+        await context.AssertOpenPullRequestsHaveExpectedMetadataAsync("renovate");
         context.MarkSuccessful();
     }
 
@@ -54,7 +54,7 @@ public sealed class SystemTests(ITestOutputHelper output)
         await context.RunRenovateAsync();
 
         await context.AssertPackagesSharePullRequestAsync("@azure/msal-browser", "@azure/msal-react");
-        await context.AssertOpenPullRequestsHaveExpectedMetadataAsync();
+        await context.AssertOpenPullRequestsHaveExpectedMetadataAsync("renovate");
         context.MarkSuccessful();
     }
 
@@ -92,7 +92,7 @@ public sealed class SystemTests(ITestOutputHelper output)
             "XUnitToFluentAssertionsAnalyzer",
             "ghcr.io/meziantou/meziantou-git-hub-actions-tracing",
             "astral-sh/uv");
-        await context.AssertOpenPullRequestsHaveExpectedMetadataAsync();
+        await context.AssertOpenPullRequestsHaveExpectedMetadataAsync("renovate");
         context.MarkSuccessful();
     }
 
