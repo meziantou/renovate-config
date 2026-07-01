@@ -104,8 +104,8 @@ internal sealed class TestContext : IAsyncDisposable
                 new("RENOVATE_INHERIT_CONFIG", "false"),
                 new("RENOVATE_ONBOARDING", "false"),
                 new("RENOVATE_REQUIRE_CONFIG", "optional"),
-                new("RENOVATE_IGNORE_SCHEDULE", "true"),
                 new("RENOVATE_RECREATE_WHEN", "always"),
+                new("RENOVATE_PR_CREATION", "immediate"),
                 new("RENOVATE_PR_HOURLY_LIMIT", "0"),
                 new("RENOVATE_PR_CONCURRENT_LIMIT", "0"),
                 new("RENOVATE_BRANCH_CONCURRENT_LIMIT", "0"),
@@ -270,6 +270,8 @@ internal sealed class TestContext : IAsyncDisposable
     {
         var root = GetGitRoot();
         var config = JsonNode.Parse(File.ReadAllText(Path.Combine(root, "default.json")))!.AsObject();
+        config["schedule"] = new JsonArray("at any time");
+
         if (automerge)
         {
             var automergeConfig = JsonNode.Parse(File.ReadAllText(Path.Combine(root, "default-automerge.json")))!.AsObject();
