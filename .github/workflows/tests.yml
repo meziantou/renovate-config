@@ -31,7 +31,17 @@ jobs:
       - uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5
 
       - name: Run unit tests
-        run: dotnet test tests --filter "Category!=Live"
+        run: |
+          mkdir -p artifacts
+          dotnet test tests --filter "Category!=Live" /bl:artifacts/unit-tests.binlog
+
+      - name: Upload unit test binlog
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: unit-tests-binlog
+          path: artifacts/unit-tests.binlog
+          if-no-files-found: ignore
 
   system-tests:
     name: Live Renovate system tests
@@ -50,6 +60,16 @@ jobs:
       - uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5
 
       - name: Run live system tests
-        run: dotnet test tests --filter "Category=Live"
+        run: |
+          mkdir -p artifacts
+          dotnet test tests --filter "Category=Live" /bl:artifacts/system-tests.binlog
         env:
           RENOVATE_TEST_TOKEN: ${{ secrets.RENOVATE_TEST_TOKEN }}
+
+      - name: Upload live system test binlog
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: system-tests-binlog
+          path: artifacts/system-tests.binlog
+          if-no-files-found: ignore
