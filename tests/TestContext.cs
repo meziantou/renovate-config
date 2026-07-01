@@ -109,6 +109,7 @@ internal sealed class TestContext : IAsyncDisposable
                 new("RENOVATE_PR_HOURLY_LIMIT", "0"),
                 new("RENOVATE_PR_CONCURRENT_LIMIT", "0"),
                 new("RENOVATE_BRANCH_CONCURRENT_LIMIT", "0"),
+                new("RENOVATE_PRUNE_STALE_BRANCHES", "false"),
                 new("RENOVATE_LABELS", """["renovate-test"]"""),
                 new("GIT_CONFIG_COUNT", "1"),
                 new("GIT_CONFIG_KEY_0", "commit.gpgsign"),
