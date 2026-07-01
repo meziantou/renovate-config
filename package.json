@@ -2,6 +2,6 @@
   "name": "meziantou-renovate-config",
   "private": true,
   "devDependencies": {
-    "renovate": "43.214.4"
+    "renovate": "43.227.1"
   }
 }
