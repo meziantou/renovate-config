@@ -7,7 +7,6 @@ using Markdig.Extensions.Tables;
 using Markdig.Syntax;
 using Meziantou.Framework;
 using Meziantou.Framework.InlineSnapshotTesting;
-using Octokit;
 
 namespace Meziantou.RenovateConfig.Tests;
 
@@ -41,10 +40,7 @@ internal sealed class TestContext : IAsyncDisposable
             throw new InvalidOperationException("RENOVATE_TEST_TOKEN is required to run live Renovate system tests.");
         }
 
-        var github = new GitHubClient(new ProductHeaderValue("meziantou-renovate-config-tests"))
-        {
-            Credentials = new Octokit.Credentials(token),
-        };
+        var github = new GitHubClient(token);
 
         await CleanupLock.WaitAsync();
         try
@@ -121,20 +117,22 @@ internal sealed class TestContext : IAsyncDisposable
             ]);
     }
 
-    public async Task<IReadOnlyList<PullRequestInfo>> GetPullRequestsAsync(ItemStateFilter state = ItemStateFilter.All)
+    public async Task<IReadOnlyList<PullRequestInfo>> GetPullRequestsAsync(PullRequestState state = PullRequestState.All)
     {
-        var pullRequests = await _github.PullRequest.GetAllForRepository(
+        var pullRequests = await _github.GetPullRequestsAsync(
             TestRepository.Owner,
             TestRepository.Name,
-            new PullRequestRequest { Base = BaseBranch.Name, State = state });
+            BaseBranch.Name,
+            state,
+            Xunit.TestContext.Current.CancellationToken);
 
         var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
         var results = new List<PullRequestInfo>(pullRequests.Count);
 
         foreach (var pullRequest in pullRequests.OrderBy(static item => item.Title, StringComparer.Ordinal))
         {
-            var commits = await _github.PullRequest.Commits(TestRepository.Owner, TestRepository.Name, pullRequest.Number);
-            var merged = await _github.PullRequest.Merged(TestRepository.Owner, TestRepository.Name, pullRequest.Number);
+            var commits = await _github.GetPullRequestCommitsAsync(TestRepository.Owner, TestRepository.Name, pullRequest.Number, Xunit.TestContext.Current.CancellationToken);
+            var merged = await _github.IsPullRequestMergedAsync(TestRepository.Owner, TestRepository.Name, pullRequest.Number, Xunit.TestContext.Current.CancellationToken);
             var updates = new List<PackageUpdateInfo>();
             var markdown = Markdown.Parse(pullRequest.Body ?? string.Empty, pipeline);
             var table = markdown.OfType<Table>().FirstOrDefault();
@@ -214,7 +212,7 @@ internal sealed class TestContext : IAsyncDisposable
 
     public async Task AssertOpenPullRequestsHaveExpectedMetadataAsync()
     {
-        var pullRequests = await GetPullRequestsAsync(ItemStateFilter.Open);
+        var pullRequests = await GetPullRequestsAsync(PullRequestState.Open);
         Assert.NotEmpty(pullRequests);
         Assert.All(pullRequests, static pullRequest =>
         {
@@ -231,11 +229,10 @@ internal sealed class TestContext : IAsyncDisposable
         {
             await RunRenovateAsync();
 
-            var contents = await _github.Repository.Content.GetAllContentsByRef(TestRepository.Owner, TestRepository.Name, "project.csproj", BaseBranch.Name);
-            var content = contents.Single().Content;
+            var content = await _github.GetFileContentAsync(TestRepository.Owner, TestRepository.Name, "project.csproj", BaseBranch.Name, Xunit.TestContext.Current.CancellationToken);
             if (!content.Contains(obsoleteFileContent, StringComparison.Ordinal))
             {
-                var openPullRequests = await GetPullRequestsAsync(ItemStateFilter.Open);
+                var openPullRequests = await GetPullRequestsAsync(PullRequestState.Open);
                 Assert.Empty(openPullRequests);
                 var pullRequests = await GetPullRequestsAsync();
                 Assert.Contains(pullRequests, static pullRequest => pullRequest.Merged && pullRequest.Commits.Count > 0);
@@ -311,7 +308,7 @@ internal sealed class TestContext : IAsyncDisposable
 
     private static async Task CleanupExpiredBranches(ITestOutputHelper output, GitHubClient github)
     {
-        var branches = await github.Repository.Branch.GetAll(TestRepository.Owner, TestRepository.Name);
+        var branches = await github.GetBranchesAsync(TestRepository.Owner, TestRepository.Name, Xunit.TestContext.Current.CancellationToken);
         var expiredBases = branches
             .Select(static branch => TemporaryBaseBranchName.TryParse(branch.Name, out var parsed) ? parsed : null)
             .Where(static branch => branch is not null && branch.HasExpired(DateTimeOffset.UtcNow))
@@ -333,17 +330,19 @@ internal sealed class TestContext : IAsyncDisposable
 
     private static async Task CleanupTestRun(ITestOutputHelper output, GitHubClient github, TemporaryBaseBranchName baseBranch)
     {
-        var pullRequests = await github.PullRequest.GetAllForRepository(
+        var pullRequests = await github.GetPullRequestsAsync(
             TestRepository.Owner,
             TestRepository.Name,
-            new PullRequestRequest { Base = baseBranch.Name, State = ItemStateFilter.Open });
+            baseBranch.Name,
+            PullRequestState.Open,
+            Xunit.TestContext.Current.CancellationToken);
 
         foreach (var pullRequest in pullRequests)
         {
-            await github.PullRequest.Update(TestRepository.Owner, TestRepository.Name, pullRequest.Number, new PullRequestUpdate { State = ItemState.Closed });
+            await github.ClosePullRequestAsync(TestRepository.Owner, TestRepository.Name, pullRequest.Number, Xunit.TestContext.Current.CancellationToken);
         }
 
-        var branches = await github.Repository.Branch.GetAll(TestRepository.Owner, TestRepository.Name);
+        var branches = await github.GetBranchesAsync(TestRepository.Owner, TestRepository.Name, Xunit.TestContext.Current.CancellationToken);
         foreach (var branch in branches)
         {
             if (baseBranch.IsPartOfTestRun(branch.Name))
@@ -356,14 +355,7 @@ internal sealed class TestContext : IAsyncDisposable
     private static async Task DeleteBranch(ITestOutputHelper output, GitHubClient github, string branchName)
     {
         output.WriteLine($"Deleting test branch {branchName}");
-        try
-        {
-            await github.Git.Reference.Delete(TestRepository.Owner, TestRepository.Name, "heads/" + branchName);
-        }
-        catch (NotFoundException)
-        {
-            // A Renovate run can delete its branch before cleanup observes it.
-        }
+        await github.DeleteBranchAsync(TestRepository.Owner, TestRepository.Name, branchName, Xunit.TestContext.Current.CancellationToken);
     }
 
     private static string? ScrubVersions(string? value)
