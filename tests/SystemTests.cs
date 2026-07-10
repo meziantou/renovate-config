@@ -78,6 +78,7 @@ public sealed class SystemTests(ITestOutputHelper output)
             internal static class Container
             {
                 public const string Image = "ghcr.io/meziantou/meziantou-git-hub-actions-tracing:1.0.0";
+                public static readonly object RedisImage = ImageSource.FromRegistry("redis:8.2");
             }
             """);
         context.AddFile("install.sh",
@@ -91,6 +92,7 @@ public sealed class SystemTests(ITestOutputHelper output)
         await context.AssertPackagesDetectedAsync(
             "XUnitToFluentAssertionsAnalyzer",
             "ghcr.io/meziantou/meziantou-git-hub-actions-tracing",
+            "redis",
             "astral-sh/uv");
         await context.AssertOpenPullRequestsHaveExpectedMetadataAsync();
         context.MarkSuccessful();
