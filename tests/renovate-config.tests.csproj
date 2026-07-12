@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Meziantou.Framework.ProcessWrapper" Version="1.0.19" />
+    <PackageReference Include="Meziantou.Framework.ProcessWrapper" Version="2.0.1" />
     <PackageReference Include="Markdig" Version="1.3.1" />
-    <PackageReference Include="Meziantou.Framework.InlineSnapshotTesting" Version="5.0.12" />
-    <PackageReference Include="Meziantou.Framework.TemporaryDirectory" Version="2.0.8" />
+    <PackageReference Include="Meziantou.Framework.InlineSnapshotTesting" Version="6.0.1" />
+    <PackageReference Include="Meziantou.Framework.TemporaryDirectory" Version="3.0.1" />
     <PackageReference Include="xunit.v3" Version="3.2.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
