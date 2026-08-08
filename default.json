@@ -76,7 +76,13 @@
         "/^azure\\.$/i",
         "/^microsoft\\.$/i",
         "/^nuget\\.$/i",
-        "/^system\\.$/i"
+        "/^system\\.$/i",
+        "actions/cache",
+        "actions/checkout",
+        "actions/setup-dotnet",
+        "actions/stale",
+        "actions/download-artifact",
+        "actions/upload-artifact",
       ],
       "pinDigests": false,
       "stabilityDays": 7
