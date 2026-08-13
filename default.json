@@ -10,6 +10,7 @@
     "helpers:pinGitHubActionDigests",
     "group:allNonMajor"
   ],
+  "ignorePresets": [":ignoreModulesAndTests"],
   "configMigration": true,
   "reviewersFromCodeOwners": true,
   "regexManagers": [
