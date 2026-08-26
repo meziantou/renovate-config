@@ -106,9 +106,20 @@ internal sealed class GitHubClient
             () => CreateRequest(HttpMethod.Delete, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/git/refs/heads/{EscapePath(branchName)}")),
             cancellationToken).ConfigureAwait(false);
 
+        // Deleting a branch must be idempotent: the same branch can be listed by multiple cleanup passes,
+        // and GitHub reports an already-deleted ref as 404 or as 422 "Reference does not exist".
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return;
+        }
+
+        if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
+        {
+            var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (body.Contains("Reference does not exist", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
         }
 
         await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
