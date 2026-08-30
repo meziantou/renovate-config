@@ -36,6 +36,18 @@
     },
     {
       "customType": "regex",
+      "description": "NuGet PackageIdentity declarations in C# files (e.g. Roslyn/Microsoft.CodeAnalysis.Testing reference assemblies)",
+      "fileMatch": ["^.*\\.cs$"],
+      "matchStrings": [
+        "new\\s+PackageIdentity\\(\\s*\"(?<depName>[^\"]+)\"\\s*,\\s*\"(?<version>[^\"]+)\"\\s*\\)"
+      ],
+      "currentValueTemplate": "[{{{version}}}]",
+      "autoReplaceStringTemplate": "new PackageIdentity(\"{{{depName}}}\", \"{{{newVersion}}}\")",
+      "datasourceTemplate": "nuget",
+      "versioningTemplate": "nuget"
+    },
+    {
+      "customType": "regex",
       "fileMatch": [".*"],
       "matchStrings": ["https://github.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>[^/]+?)/"],
       "datasourceTemplate": "github-releases"

@@ -81,6 +81,16 @@ public sealed class SystemTests(ITestOutputHelper output)
                 public static readonly object RedisImage = ImageSource.FromRegistry("redis:8.2");
             }
             """);
+        context.AddFile("ReferenceAssemblies.cs",
+            """
+            internal static class References
+            {
+                public static readonly ReferenceAssemblies Default = new ReferenceAssemblies(
+                    "net8.0",
+                    new PackageIdentity("Meziantou.Framework.TemporaryDirectory", "1.0.0"),
+                    Path.Combine("ref", "net8.0"));
+            }
+            """);
         context.AddFile("install.sh",
             """
             curl -L https://github.com/astral-sh/uv/releases/download/0.1.0/uv-installer.sh
@@ -93,6 +103,7 @@ public sealed class SystemTests(ITestOutputHelper output)
             "XUnitToFluentAssertionsAnalyzer",
             "ghcr.io/meziantou/meziantou-git-hub-actions-tracing",
             "redis",
+            "Meziantou.Framework.TemporaryDirectory",
             "astral-sh/uv");
         await context.AssertOpenPullRequestsHaveExpectedMetadataAsync();
         context.MarkSuccessful();
