@@ -58,6 +58,12 @@
       "stabilityDays": 14
     },
     {
+      "description": "Bump NuGet versions found by custom managers, matching the built-in nuget manager (a bare version is a minimum-version range, so the default strategy would report no update)",
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["nuget"],
+      "rangeStrategy": "bump"
+    },
+    {
       "matchPackageNames": ["Meziantou.ProjectConfiguration"],
       "matchManagers": ["nuget"],
       "replacementName": "Meziantou.DotNet.CodingStandard"
