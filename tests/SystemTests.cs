@@ -93,7 +93,7 @@ public sealed class SystemTests(ITestOutputHelper output)
             """);
         context.AddFile("install.sh",
             """
-            curl -L https://github.com/astral-sh/uv/releases/download/0.1.0/uv-installer.sh
+            curl -L https://github.com/astral-sh/uv/releases/download/0.12.5/uv-installer.sh
             """);
 
         await context.PushAsync();
