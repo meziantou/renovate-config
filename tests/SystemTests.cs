@@ -77,7 +77,7 @@ public sealed class SystemTests(ITestOutputHelper output)
             """
             internal static class Container
             {
-                public const string Image = "ghcr.io/meziantou/meziantou-git-hub-actions-tracing:1.0.0";
+                public const string Image = "ghcr.io/meziantou/meziantou-git-hub-actions-tracing:1.0.42";
                 public static readonly object RedisImage = ImageSource.FromRegistry("redis:8.2");
             }
             """);
@@ -87,7 +87,7 @@ public sealed class SystemTests(ITestOutputHelper output)
             {
                 public static readonly ReferenceAssemblies Default = new ReferenceAssemblies(
                     "net8.0",
-                    new PackageIdentity("Meziantou.Framework.TemporaryDirectory", "1.0.0"),
+                    new PackageIdentity("Meziantou.Framework.TemporaryDirectory", "1.0.40"),
                     Path.Combine("ref", "net8.0"));
             }
             """);
