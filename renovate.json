@@ -1,5 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "tests/SystemTests.cs embeds deliberately outdated versions that the system tests expect Renovate to report as updates, so Renovate must not update them in this repository.",
+  "ignorePaths": [
+    "tests/SystemTests.cs"
+  ],
   "extends": [
     "local>meziantou/renovate-config"
   ]

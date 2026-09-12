@@ -145,7 +145,7 @@ internal sealed class TestContext : IAsyncDisposable
                     foreach (var row in rows.Skip(1))
                     {
                         updates.Add(new PackageUpdateInfo(
-                            GetCell("Package")?.InnerText().Replace("(source)", string.Empty, StringComparison.Ordinal).Trim(),
+                            RemoveSourceLink(GetCell("Package")?.InnerText()),
                             GetCell("Type")?.InnerText().Trim(),
                             ScrubVersions(GetCell("Update")?.InnerText().Trim())));
 
@@ -356,6 +356,14 @@ internal sealed class TestContext : IAsyncDisposable
     {
         output.WriteLine($"Deleting test branch {branchName}");
         await github.DeleteBranchAsync(TestRepository.Owner, TestRepository.Name, branchName, Xunit.TestContext.Current.CancellationToken);
+    }
+
+    private static string? RemoveSourceLink(string? value)
+    {
+        // Renovate renders the package cell as "name (source)", and the spacing around "source" changed in v44.
+        return value is null
+            ? null
+            : Regex.Replace(value, @"\(\s*source\s*\)", "", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)).Trim();
     }
 
     private static string? ScrubVersions(string? value)
