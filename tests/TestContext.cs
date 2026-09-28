@@ -2,11 +2,11 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using Markdig;
-using Markdig.Extensions.Tables;
-using Markdig.Syntax;
 using Meziantou.Framework;
 using Meziantou.Framework.InlineSnapshotTesting;
+using Meziantou.Framework.Markdown;
+using Meziantou.Framework.Markdown.Extensions.Tables;
+using Meziantou.Framework.Markdown.Syntax;
 
 namespace Meziantou.RenovateConfig.Tests;
 
@@ -134,7 +134,7 @@ internal sealed class TestContext : IAsyncDisposable
             var commits = await _github.GetPullRequestCommitsAsync(TestRepository.Owner, TestRepository.Name, pullRequest.Number, Xunit.TestContext.Current.CancellationToken);
             var merged = await _github.IsPullRequestMergedAsync(TestRepository.Owner, TestRepository.Name, pullRequest.Number, Xunit.TestContext.Current.CancellationToken);
             var updates = new List<PackageUpdateInfo>();
-            var markdown = Markdown.Parse(pullRequest.Body ?? string.Empty, pipeline);
+            var markdown = MarkdownConverter.Parse(pullRequest.Body ?? string.Empty, pipeline);
             var table = markdown.OfType<Table>().FirstOrDefault();
             if (table is not null)
             {

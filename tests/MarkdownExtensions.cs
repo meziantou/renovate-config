@@ -1,6 +1,6 @@
-using Markdig.Renderers.Normalize;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
+using Meziantou.Framework.Markdown.Renderers.Normalize;
+using Meziantou.Framework.Markdown.Syntax;
+using Meziantou.Framework.Markdown.Syntax.Inlines;
 
 namespace Meziantou.RenovateConfig.Tests;
 
