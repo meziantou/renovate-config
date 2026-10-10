@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <IncludeSharedHttpClient>true</IncludeSharedHttpClient>
+    <SharedHttpClientUserAgent>meziantou-renovate-config-tests</SharedHttpClientUserAgent>
   </PropertyGroup>
 
   <ItemGroup>

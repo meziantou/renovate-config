@@ -17,7 +17,6 @@ internal enum PullRequestState
 
 internal sealed class GitHubClient
 {
-    private const string UserAgent = "meziantou-renovate-config-tests";
     private const int PageSize = 100;
     private static readonly Uri BaseAddress = new("https://api.github.com/");
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
@@ -52,7 +51,7 @@ internal sealed class GitHubClient
     public async Task<bool> IsPullRequestMergedAsync(string owner, string repository, int pullRequestNumber, CancellationToken cancellationToken)
     {
         using var response = await SendAsync(
-            () => CreateRequest(HttpMethod.Get, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/pulls/{pullRequestNumber.ToString(CultureInfo.InvariantCulture)}/merge")),
+            CreateRequest(HttpMethod.Get, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/pulls/{pullRequestNumber.ToString(CultureInfo.InvariantCulture)}/merge")),
             cancellationToken).ConfigureAwait(false);
 
         return response.StatusCode switch
@@ -66,7 +65,7 @@ internal sealed class GitHubClient
     public async Task<string> GetFileContentAsync(string owner, string repository, string path, string gitReference, CancellationToken cancellationToken)
     {
         using var response = await SendAsync(
-            () => CreateRequest(HttpMethod.Get, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/contents/{EscapePath(path)}", [
+            CreateRequest(HttpMethod.Get, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/contents/{EscapePath(path)}", [
                 KeyValuePair.Create<string, string?>("ref", gitReference),
             ])),
             cancellationToken).ConfigureAwait(false);
@@ -94,7 +93,7 @@ internal sealed class GitHubClient
     public async Task ClosePullRequestAsync(string owner, string repository, int pullRequestNumber, CancellationToken cancellationToken)
     {
         using var response = await SendAsync(
-            () => CreateRequest(HttpMethod.Patch, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/pulls/{pullRequestNumber.ToString(CultureInfo.InvariantCulture)}"), JsonContent.Create(new { state = "closed" })),
+            CreateRequest(HttpMethod.Patch, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/pulls/{pullRequestNumber.ToString(CultureInfo.InvariantCulture)}"), JsonContent.Create(new { state = "closed" })),
             cancellationToken).ConfigureAwait(false);
 
         await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
@@ -103,7 +102,7 @@ internal sealed class GitHubClient
     public async Task DeleteBranchAsync(string owner, string repository, string branchName, CancellationToken cancellationToken)
     {
         using var response = await SendAsync(
-            () => CreateRequest(HttpMethod.Delete, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/git/refs/heads/{EscapePath(branchName)}")),
+            CreateRequest(HttpMethod.Delete, BuildUri($"repos/{Escape(owner)}/{Escape(repository)}/git/refs/heads/{EscapePath(branchName)}")),
             cancellationToken).ConfigureAwait(false);
 
         // Deleting a branch must be idempotent: the same branch can be listed by multiple cleanup passes,
@@ -132,7 +131,7 @@ internal sealed class GitHubClient
         for (var page = 1; ; page++)
         {
             using var response = await SendAsync(
-                () => CreateRequest(HttpMethod.Get, AppendQuery(uri, "page", page.ToString(CultureInfo.InvariantCulture))),
+                CreateRequest(HttpMethod.Get, AppendQuery(uri, "page", page.ToString(CultureInfo.InvariantCulture))),
                 cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
@@ -147,9 +146,12 @@ internal sealed class GitHubClient
         }
     }
 
-    private async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> requestFactory, CancellationToken cancellationToken)
+    private static async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        return await SharedHttpClient.SendAsync(requestFactory, cancellationToken).ConfigureAwait(false);
+        using (request)
+        {
+            return await SharedHttpClient.InstanceWithAutoRedirect.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        }
     }
 
     private HttpRequestMessage CreateRequest(HttpMethod method, Uri uri, HttpContent? content = null)
@@ -160,7 +162,6 @@ internal sealed class GitHubClient
         };
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
         request.Headers.Authorization = _authenticationHeader;
-        request.Headers.UserAgent.ParseAdd(UserAgent);
         request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
         return request;
     }
