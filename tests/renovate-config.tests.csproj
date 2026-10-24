@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Meziantou.Framework.ProcessWrapper" Version="2.0.6" />
-    <PackageReference Include="Meziantou.Framework.InlineSnapshotTesting" Version="6.0.14" />
-    <PackageReference Include="Meziantou.Framework.Markdown" Version="1.0.0" />
-    <PackageReference Include="Meziantou.Framework.TemporaryDirectory" Version="3.0.9" />
+    <PackageReference Include="Meziantou.Framework.ProcessWrapper" Version="2.0.8" />
+    <PackageReference Include="Meziantou.Framework.InlineSnapshotTesting" Version="6.0.18" />
+    <PackageReference Include="Meziantou.Framework.Markdown" Version="1.0.4" />
+    <PackageReference Include="Meziantou.Framework.TemporaryDirectory" Version="3.0.12" />
   </ItemGroup>
 </Project>
